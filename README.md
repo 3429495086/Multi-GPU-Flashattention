@@ -1,8 +1,8 @@
 # Multi-GPU FlashAttention
 
-A research prototype for workload modeling and scheduling in multi-GPU FlashAttention.
+A research prototype for workload modeling, scheduling, and Ring-Attention-style multi-GPU execution in FlashAttention, with longer-term directions in dynamic load balancing and heterogeneous GPU scheduling.
 
-This repository is not yet a full multi-GPU FlashAttention runtime. The current focus is on understanding how attention workloads can be partitioned, modeled, and scheduled across GPUs before moving to communication-aware execution.
+This repository started from workload modeling and scheduling experiments, and is now being extended toward a Ring-Attention-style multi-GPU execution prototype with real end-to-end runtime evaluation. A longer-term goal is to study how the scheduler should adapt when runtime load changes or when GPUs have different capabilities.
 
 ## Overview
 
@@ -11,9 +11,10 @@ The project studies several questions behind multi-GPU attention:
 - How should attention be partitioned into blocks?
 - How much work does each block or row actually contain under different masks?
 - How balanced are different scheduling strategies across GPUs?
-- What kind of partitioning is a better fit for future ring-style or communication-aware execution?
+- What kind of partitioning is a better fit for Ring-Attention-style execution?
+- How should scheduling change under dynamic load imbalance or heterogeneous GPUs?
 
-At the current stage, the code mainly covers workload construction, simple cost estimation, and scheduling experiments.
+At the current stage, the code covers workload construction, simple cost estimation, scheduling experiments, and ongoing work toward a real multi-GPU Ring-style prototype.
 
 ## Current Features
 
@@ -100,7 +101,7 @@ python3 tests/single_gpu_baseline.py
 
 This repository is still in an early research / prototype stage.
 
-Implemented now:
+Completed so far:
 
 - workload modeling for attention blocks
 - masked active-element counting
@@ -108,22 +109,25 @@ Implemented now:
 - row-level task aggregation
 - initial benchmark scripts
 
-Still in progress:
+Current work:
 
+- Ring-Attention-style multi-GPU execution prototype
+- real end-to-end runtime measurement on multiple GPUs
+- comparison between measured runtime and compute-only predictions from the current model
 - cleaner experiment pipeline
-- stronger comparisons between scheduling methods
-- better cost modeling beyond pure computation
 
-Planned next:
+Next steps:
 
-- communication-aware cost terms
+- communication backend comparison across MPI, CUDA-aware MPI, and NCCL
+- deeper communication-aware cost terms
+- dynamic load balancing beyond static partitioning
 - heterogeneous GPU scheduling
-- integration with a real multi-GPU execution backend
+- tighter integration between scheduling results and execution results
 
 ## Notes
 
-- The current code focuses on scheduling logic, not kernel optimization.
-- Communication cost is not yet modeled in detail.
+- The project started from scheduling logic and is now moving toward real multi-GPU execution.
+- Communication cost is still not modeled in detail.
 - The repository structure may still change as experiments grow.
 
 ## Author
