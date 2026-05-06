@@ -200,22 +200,6 @@ In progress / future work:
 - heterogeneous GPU scheduling;
 - future replacement of the placeholder attention kernel with a more realistic FlashAttention-style implementation.
 
-## Generated Files
-
-Do not commit generated executables, binary dumps, or result directories:
-
-```text
-ring/attention/bench/ring_attention_*_gpu_bench
-ring/attention/gpu/ring_attention_*_gpu
-ring/attention/verify_full
-ring/attention/bench/ring_output_rank*.bin
-ring/attention/bench/results/
-ring/attention/gpu/results/
-ring/loop/ring_loop_*
-*.log
-.DS_Store
-```
-
 ## Author
 
 Yuvinci
