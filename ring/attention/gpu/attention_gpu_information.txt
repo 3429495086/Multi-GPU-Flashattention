@@ -1,0 +1,45 @@
+============================================================
+                    ONE TIME ATTENTION
+============================================================
+/nethome/nvidia/hpc_sdk/Linux_x86_64/24.3/comm_libs/12.3/openmpi4/openmpi-4.1.5/bin/mpirun \
+> -np 2 ./ring_attention_staged_gpu
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+[Rank 0] step 0: attention on own KV
+[Rank 1] step 0: attention on own KV
+[Rank 0] step 1: KV from rank 1 | D2H=0.060 MPI=0.207 H2D=0.031 attn=16.033 merge=0.050 total=16.381 ms
+[Rank 1] step 1: KV from rank 0 | D2H=0.046 MPI=0.181 H2D=0.030 attn=16.129 merge=0.051 total=16.438 ms
+[Rank 0] ring attention done in 33.279 ms
+[Rank 1] ring attention done in 33.282 ms
+[Rank 0] output dumped to ring_output_rank0.bin
+[Rank 1] output dumped to ring_output_rank1.bin
+/nethome/nvidia/hpc_sdk/Linux_x86_64/24.3/comm_libs/12.3/openmpi4/openmpi-4.1.5/bin/mpirun \
+> -np 2 ./ring_attention_cuda_aware_gpu
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+[Rank 0] step 0: attention on own KV
+[Rank 1] step 0: attention on own KV
+[Rank 0] step 1: KV from rank 1 | MPI=63.240 attn=15.990 merge=0.060 total=79.291 ms
+[Rank 1] step 1: KV from rank 0 | MPI=63.118 attn=16.141 merge=0.053 total=79.312 ms
+[Rank 0] ring attention done in 96.224 ms
+[Rank 1] ring attention done in 96.224 ms
+[Rank 0] output dumped to ring_output_rank0.bin
+[Rank 1] output dumped to ring_output_rank1.bin
+/nethome/nvidia/hpc_sdk/Linux_x86_64/24.3/comm_libs/12.3/openmpi4/openmpi-4.1.5/bin/mpirun \
+> -np 2 ./ring_attention_nccl_gpu
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+[Rank 0] step 0: attention on own KV
+[Rank 1] step 0: attention on own KV
+[Rank 0] step 1: KV from rank 1 | NCCL=13.582 attn=15.899 merge=0.058 total=29.539 ms
+[Rank 1] step 1: KV from rank 0 | NCCL=13.465 attn=15.961 merge=0.062 total=29.487 ms
+[Rank 0] ring attention done in 48.178 ms
+[Rank 1] ring attention done in 48.198 ms
+[Rank 0] output dumped to ring_output_rank0.bin
+[Rank 1] output dumped to ring_output_rank1.bin

@@ -1,0 +1,421 @@
+当前在消费级 GPU（无 P2P、无 NVLink）上，NCCL 是最优选择，达到了 PCIe 3.0 理论带宽的 52%。在支持 NVLink 的高端硬件上，NCCL 的优势预计会更大，这将在后续实验中验证
+
+./benchmark_comm_loop.sh 
+==========Loop Communication Benchmark ==================================================================================================================================
+warmup=10 iters=100
+
+===== backend=staged =====
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 262144 bytes (256.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 262144 bytes (256.0 KB), neighbors: left=0 right=0
+RESULT backend=staged bytes=262144 ranks=2 warmup=10 iters=100 avg_d2h_ms=0.056 avg_mpi_ms=0.056 avg_h2d_ms=0.028 avg_total_ms=0.138 total_GBps=1.901 mpi_GBps=4.659
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=0 right=0
+RESULT backend=staged bytes=1048576 ranks=2 warmup=10 iters=100 avg_d2h_ms=0.179 avg_mpi_ms=0.207 avg_h2d_ms=0.094 avg_total_ms=0.477 total_GBps=2.198 mpi_GBps=5.077
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=0 right=0
+RESULT backend=staged bytes=4194304 ranks=2 warmup=10 iters=100 avg_d2h_ms=0.444 avg_mpi_ms=0.842 avg_h2d_ms=0.357 avg_total_ms=1.638 total_GBps=2.561 mpi_GBps=4.984
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=0 right=0
+RESULT backend=staged bytes=16777216 ranks=2 warmup=10 iters=100 avg_d2h_ms=1.507 avg_mpi_ms=5.085 avg_h2d_ms=1.455 avg_total_ms=7.923 total_GBps=2.118 mpi_GBps=3.299
+
+===== backend=staged_Isendrecv =====
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 262144 bytes (256.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 262144 bytes (256.0 KB), neighbors: left=0 right=0
+RESULT backend=isendrecv bytes=262144 ranks=2 warmup=10 iters=100 avg_d2h_ms=0.057 avg_mpi_ms=0.055 avg_h2d_ms=0.028 avg_total_ms=0.138 total_GBps=1.901 mpi_GBps=4.784
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=0 right=0
+RESULT backend=isendrecv bytes=1048576 ranks=2 warmup=10 iters=100 avg_d2h_ms=0.408 avg_mpi_ms=0.522 avg_h2d_ms=0.154 avg_total_ms=0.848 total_GBps=1.236 mpi_GBps=2.008
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=0 right=0
+RESULT backend=isendrecv bytes=4194304 ranks=2 warmup=10 iters=100 avg_d2h_ms=0.431 avg_mpi_ms=0.835 avg_h2d_ms=0.352 avg_total_ms=1.612 total_GBps=2.602 mpi_GBps=5.025
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=0 right=0
+RESULT backend=isendrecv bytes=16777216 ranks=2 warmup=10 iters=100 avg_d2h_ms=1.451 avg_mpi_ms=4.972 avg_h2d_ms=1.447 avg_total_ms=7.862 total_GBps=2.134 mpi_GBps=3.374
+
+===== backend=cuda_aware =====
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 262144 bytes (256.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 262144 bytes (256.0 KB), neighbors: left=0 right=0
+RESULT backend=cuda_aware bytes=262144 ranks=2 warmup=10 iters=100 avg_mpi_ms=0.105 avg_total_ms=0.105 total_GBps=2.487 mpi_GBps=2.489
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=0 right=0
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=1 right=1
+RESULT backend=cuda_aware bytes=1048576 ranks=2 warmup=10 iters=100 avg_mpi_ms=0.579 avg_total_ms=0.579 total_GBps=1.811 mpi_GBps=1.811
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=0 right=0
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=1 right=1
+RESULT backend=cuda_aware bytes=4194304 ranks=2 warmup=10 iters=100 avg_mpi_ms=1.131 avg_total_ms=1.131 total_GBps=3.710 mpi_GBps=3.710
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=0 right=0
+RESULT backend=cuda_aware bytes=16777216 ranks=2 warmup=10 iters=100 avg_mpi_ms=4.032 avg_total_ms=4.032 total_GBps=4.161 mpi_GBps=4.161
+
+===== backend=cuda_aware_Isendrecv =====
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 262144 bytes (256.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 262144 bytes (256.0 KB), neighbors: left=0 right=0
+RESULT backend=cuda_aware bytes=262144 ranks=2 warmup=10 iters=100 avg_mpi_ms=0.103 avg_total_ms=0.103 total_GBps=2.538 mpi_GBps=2.541
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=0 right=0
+RESULT backend=cuda_aware bytes=1048576 ranks=2 warmup=10 iters=100 avg_mpi_ms=0.686 avg_total_ms=0.686 total_GBps=1.528 mpi_GBps=1.528
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=0 right=0
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=1 right=1
+RESULT backend=cuda_aware bytes=4194304 ranks=2 warmup=10 iters=100 avg_mpi_ms=1.123 avg_total_ms=1.123 total_GBps=3.734 mpi_GBps=3.735
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=0 right=0
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=1 right=1
+RESULT backend=cuda_aware bytes=16777216 ranks=2 warmup=10 iters=100 avg_mpi_ms=4.009 avg_total_ms=4.009 total_GBps=4.185 mpi_GBps=4.185
+
+===== backend=nccl =====
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 262144 bytes (256.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 262144 bytes (256.0 KB), neighbors: left=0 right=0
+RESULT backend=nccl bytes=262144 ranks=2 warmup=10 iters=100 avg_nccl_ms=0.070 avg_total_ms=0.070 total_GBps=3.719 nccl_GBps=3.725
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=0 right=0
+RESULT backend=nccl bytes=1048576 ranks=2 warmup=10 iters=100 avg_nccl_ms=0.245 avg_total_ms=0.246 total_GBps=4.270 nccl_GBps=4.272
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=0 right=0
+RESULT backend=nccl bytes=4194304 ranks=2 warmup=10 iters=100 avg_nccl_ms=0.679 avg_total_ms=0.679 total_GBps=6.174 nccl_GBps=6.175
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=0 right=0
+RESULT backend=nccl bytes=16777216 ranks=2 warmup=10 iters=100 avg_nccl_ms=2.007 avg_total_ms=2.007 total_GBps=8.358 nccl_GBps=8.358
+
+========== Done ==========
+./benchmark_comm_loop.sh 
+==========Loop Communication Benchmark ========================================================================================================================
+warmup=10 iters=100
+
+===== backend=staged =====
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 262144 bytes (256.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 262144 bytes (256.0 KB), neighbors: left=0 right=0
+RESULT backend=staged bytes=262144 ranks=2 warmup=10 iters=100 avg_d2h_ms=0.048 avg_mpi_ms=0.078 avg_h2d_ms=0.030 avg_total_ms=0.150 total_GBps=1.743 mpi_GBps=3.356
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=0 right=0
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=1 right=1
+RESULT backend=staged bytes=1048576 ranks=2 warmup=10 iters=100 avg_d2h_ms=0.182 avg_mpi_ms=0.250 avg_h2d_ms=0.096 avg_total_ms=0.507 total_GBps=2.069 mpi_GBps=4.192
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=0 right=0
+RESULT backend=staged bytes=4194304 ranks=2 warmup=10 iters=100 avg_d2h_ms=0.446 avg_mpi_ms=0.855 avg_h2d_ms=0.361 avg_total_ms=1.657 total_GBps=2.532 mpi_GBps=4.907
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=0 right=0
+RESULT backend=staged bytes=16777216 ranks=2 warmup=10 iters=100 avg_d2h_ms=1.492 avg_mpi_ms=5.078 avg_h2d_ms=1.509 avg_total_ms=7.990 total_GBps=2.100 mpi_GBps=3.304
+
+===== backend=staged_Isendrecv =====
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 262144 bytes (256.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 262144 bytes (256.0 KB), neighbors: left=0 right=0
+RESULT backend=isendrecv bytes=262144 ranks=2 warmup=10 iters=100 avg_d2h_ms=0.057 avg_mpi_ms=0.056 avg_h2d_ms=0.028 avg_total_ms=0.140 total_GBps=1.871 mpi_GBps=4.684
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=0 right=0
+RESULT backend=isendrecv bytes=1048576 ranks=2 warmup=10 iters=100 avg_d2h_ms=0.368 avg_mpi_ms=0.396 avg_h2d_ms=0.148 avg_total_ms=0.722 total_GBps=1.452 mpi_GBps=2.649
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=0 right=0
+RESULT backend=isendrecv bytes=4194304 ranks=2 warmup=10 iters=100 avg_d2h_ms=0.446 avg_mpi_ms=0.826 avg_h2d_ms=0.353 avg_total_ms=1.618 total_GBps=2.592 mpi_GBps=5.077
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=0 right=0
+RESULT backend=isendrecv bytes=16777216 ranks=2 warmup=10 iters=100 avg_d2h_ms=1.439 avg_mpi_ms=4.900 avg_h2d_ms=1.426 avg_total_ms=7.752 total_GBps=2.164 mpi_GBps=3.424
+
+===== backend=cuda_aware =====
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 262144 bytes (256.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 262144 bytes (256.0 KB), neighbors: left=0 right=0
+RESULT backend=cuda_aware bytes=262144 ranks=2 warmup=10 iters=100 avg_mpi_ms=0.202 avg_total_ms=0.202 total_GBps=1.295 mpi_GBps=1.296
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=0 right=0
+RESULT backend=cuda_aware bytes=1048576 ranks=2 warmup=10 iters=100 avg_mpi_ms=0.352 avg_total_ms=0.352 total_GBps=2.981 mpi_GBps=2.982
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=0 right=0
+RESULT backend=cuda_aware bytes=4194304 ranks=2 warmup=10 iters=100 avg_mpi_ms=1.129 avg_total_ms=1.129 total_GBps=3.716 mpi_GBps=3.716
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=0 right=0
+RESULT backend=cuda_aware bytes=16777216 ranks=2 warmup=10 iters=100 avg_mpi_ms=4.091 avg_total_ms=4.091 total_GBps=4.101 mpi_GBps=4.101
+
+===== backend=cuda_aware_Isendrecv =====
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 262144 bytes (256.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 262144 bytes (256.0 KB), neighbors: left=0 right=0
+RESULT backend=cuda_aware bytes=262144 ranks=2 warmup=10 iters=100 avg_mpi_ms=0.110 avg_total_ms=0.110 total_GBps=2.373 mpi_GBps=2.376
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=0 right=0
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=1 right=1
+RESULT backend=cuda_aware bytes=1048576 ranks=2 warmup=10 iters=100 avg_mpi_ms=0.347 avg_total_ms=0.347 total_GBps=3.020 mpi_GBps=3.021
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=0 right=0
+RESULT backend=cuda_aware bytes=4194304 ranks=2 warmup=10 iters=100 avg_mpi_ms=1.128 avg_total_ms=1.128 total_GBps=3.717 mpi_GBps=3.717
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=0 right=0
+RESULT backend=cuda_aware bytes=16777216 ranks=2 warmup=10 iters=100 avg_mpi_ms=4.053 avg_total_ms=4.053 total_GBps=4.139 mpi_GBps=4.139
+
+===== backend=nccl =====
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 262144 bytes (256.0 KB), neighbors: left=0 right=0
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 262144 bytes (256.0 KB), neighbors: left=1 right=1
+RESULT backend=nccl bytes=262144 ranks=2 warmup=10 iters=100 avg_nccl_ms=0.071 avg_total_ms=0.071 total_GBps=3.698 nccl_GBps=3.703
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=0 right=0
+RESULT backend=nccl bytes=1048576 ranks=2 warmup=10 iters=100 avg_nccl_ms=0.251 avg_total_ms=0.252 total_GBps=4.169 nccl_GBps=4.171
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=0 right=0
+RESULT backend=nccl bytes=4194304 ranks=2 warmup=10 iters=100 avg_nccl_ms=0.689 avg_total_ms=0.689 total_GBps=6.087 nccl_GBps=6.088
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=0 right=0
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=1 right=1
+RESULT backend=nccl bytes=16777216 ranks=2 warmup=10 iters=100 avg_nccl_ms=1.993 avg_total_ms=1.993 total_GBps=8.419 nccl_GBps=8.420
+
+========== Done ==========
+./benchmark_comm_loop.sh 
+==========Loop Communication Benchmark ========================================================================================================================
+warmup=10 iters=100
+
+===== backend=staged =====
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 262144 bytes (256.0 KB), neighbors: left=0 right=0
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 262144 bytes (256.0 KB), neighbors: left=1 right=1
+RESULT backend=staged bytes=262144 ranks=2 warmup=10 iters=100 avg_d2h_ms=0.057 avg_mpi_ms=0.055 avg_h2d_ms=0.028 avg_total_ms=0.138 total_GBps=1.897 mpi_GBps=4.790
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=0 right=0
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=1 right=1
+RESULT backend=staged bytes=1048576 ranks=2 warmup=10 iters=100 avg_d2h_ms=0.181 avg_mpi_ms=0.204 avg_h2d_ms=0.093 avg_total_ms=0.477 total_GBps=2.197 mpi_GBps=5.132
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=0 right=0
+RESULT backend=staged bytes=4194304 ranks=2 warmup=10 iters=100 avg_d2h_ms=0.441 avg_mpi_ms=0.920 avg_h2d_ms=0.358 avg_total_ms=1.687 total_GBps=2.487 mpi_GBps=4.559
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=0 right=0
+RESULT backend=staged bytes=16777216 ranks=2 warmup=10 iters=100 avg_d2h_ms=1.432 avg_mpi_ms=4.887 avg_h2d_ms=1.421 avg_total_ms=7.729 total_GBps=2.171 mpi_GBps=3.433
+
+===== backend=staged_Isendrecv =====
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 262144 bytes (256.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 262144 bytes (256.0 KB), neighbors: left=0 right=0
+RESULT backend=isendrecv bytes=262144 ranks=2 warmup=10 iters=100 avg_d2h_ms=0.057 avg_mpi_ms=0.055 avg_h2d_ms=0.028 avg_total_ms=0.138 total_GBps=1.894 mpi_GBps=4.745
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=0 right=0
+RESULT backend=isendrecv bytes=1048576 ranks=2 warmup=10 iters=100 avg_d2h_ms=0.180 avg_mpi_ms=0.207 avg_h2d_ms=0.093 avg_total_ms=0.477 total_GBps=2.200 mpi_GBps=5.055
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=0 right=0
+RESULT backend=isendrecv bytes=4194304 ranks=2 warmup=10 iters=100 avg_d2h_ms=0.441 avg_mpi_ms=0.839 avg_h2d_ms=0.356 avg_total_ms=1.632 total_GBps=2.571 mpi_GBps=4.997
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=0 right=0
+RESULT backend=isendrecv bytes=16777216 ranks=2 warmup=10 iters=100 avg_d2h_ms=1.587 avg_mpi_ms=5.583 avg_h2d_ms=1.562 avg_total_ms=8.562 total_GBps=1.960 mpi_GBps=3.005
+
+===== backend=cuda_aware =====
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 262144 bytes (256.0 KB), neighbors: left=0 right=0
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 262144 bytes (256.0 KB), neighbors: left=1 right=1
+RESULT backend=cuda_aware bytes=262144 ranks=2 warmup=10 iters=100 avg_mpi_ms=0.105 avg_total_ms=0.105 total_GBps=2.499 mpi_GBps=2.502
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=0 right=0
+RESULT backend=cuda_aware bytes=1048576 ranks=2 warmup=10 iters=100 avg_mpi_ms=0.593 avg_total_ms=0.593 total_GBps=1.767 mpi_GBps=1.767
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=0 right=0
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=1 right=1
+RESULT backend=cuda_aware bytes=4194304 ranks=2 warmup=10 iters=100 avg_mpi_ms=1.133 avg_total_ms=1.134 total_GBps=3.700 mpi_GBps=3.700
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=0 right=0
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=1 right=1
+RESULT backend=cuda_aware bytes=16777216 ranks=2 warmup=10 iters=100 avg_mpi_ms=4.018 avg_total_ms=4.018 total_GBps=4.175 mpi_GBps=4.175
+
+===== backend=cuda_aware_Isendrecv =====
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 262144 bytes (256.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 262144 bytes (256.0 KB), neighbors: left=0 right=0
+RESULT backend=cuda_aware bytes=262144 ranks=2 warmup=10 iters=100 avg_mpi_ms=0.103 avg_total_ms=0.103 total_GBps=2.536 mpi_GBps=2.539
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=0 right=0
+RESULT backend=cuda_aware bytes=1048576 ranks=2 warmup=10 iters=100 avg_mpi_ms=0.796 avg_total_ms=0.796 total_GBps=1.317 mpi_GBps=1.318
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=0 right=0
+RESULT backend=cuda_aware bytes=4194304 ranks=2 warmup=10 iters=100 avg_mpi_ms=1.128 avg_total_ms=1.128 total_GBps=3.718 mpi_GBps=3.719
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=0 right=0
+RESULT backend=cuda_aware bytes=16777216 ranks=2 warmup=10 iters=100 avg_mpi_ms=4.026 avg_total_ms=4.026 total_GBps=4.167 mpi_GBps=4.167
+
+===== backend=nccl =====
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 262144 bytes (256.0 KB), neighbors: left=0 right=0
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 262144 bytes (256.0 KB), neighbors: left=1 right=1
+RESULT backend=nccl bytes=262144 ranks=2 warmup=10 iters=100 avg_nccl_ms=0.069 avg_total_ms=0.070 total_GBps=3.768 nccl_GBps=3.774
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 1048576 bytes (1024.0 KB), neighbors: left=0 right=0
+RESULT backend=nccl bytes=1048576 ranks=2 warmup=10 iters=100 avg_nccl_ms=0.243 avg_total_ms=0.243 total_GBps=4.320 nccl_GBps=4.322
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=0 right=0
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 4194304 bytes (4096.0 KB), neighbors: left=1 right=1
+RESULT backend=nccl bytes=4194304 ranks=2 warmup=10 iters=100 avg_nccl_ms=0.688 avg_total_ms=0.688 total_GBps=6.098 nccl_GBps=6.099
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=1 right=1
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] KV shard: 16777216 bytes (16384.0 KB), neighbors: left=0 right=0
+RESULT backend=nccl bytes=16777216 ranks=2 warmup=10 iters=100 avg_nccl_ms=2.020 avg_total_ms=2.020 total_GBps=8.304 nccl_GBps=8.305
+
+========== Done ==========
+
+
+=======================================================================================
+  Ring Communication Benchmark Results
+  Hardware: 2x NVIDIA GeForce GTX 1660 Ti (PCIe 3.0, no P2P, no NVLink)
+  Method: 10 warmup + 100 iterations, MPI_Reduce(MAX) across ranks, 3 runs averaged
+=======================================================================================
+
+Table 1: Average Latency (ms)
+--------------------------------------------------------------------------------
+  Data Size  |  Staged  | Staged   | CUDA-aware | CUDA-aware |   NCCL
+             |  (block) | (Isend)  |  (block)   |  (Isend)   |
+-------------|----------|----------|------------|------------|----------
+   256 KB    |   0.142  |   0.139  |    0.137   |    0.105   |   0.070
+     1 MB    |   0.487  |   0.682* |    0.508*  |    0.610*  |   0.244
+     4 MB    |   1.661  |   1.621  |    1.131   |    1.126   |   0.689
+    16 MB    |   7.881  |   8.059  |    4.047   |    4.029   |   2.012
+--------------------------------------------------------------------------------
+
+Table 2: Effective Bandwidth (GB/s)
+--------------------------------------------------------------------------------
+  Data Size  |  Staged  | Staged   | CUDA-aware | CUDA-aware |   NCCL
+             |  (block) | (Isend)  |  (block)   |  (Isend)   |
+-------------|----------|----------|------------|------------|----------
+   256 KB    |   1.848  |   1.888  |    2.094   |    2.482   |   3.728
+     1 MB    |   2.154  |   1.629* |    2.186*  |    1.787*  |   4.287
+     4 MB    |   2.525  |   2.588  |    3.709   |    3.723   |   6.113
+    16 MB    |   2.130  |   2.086  |    4.146   |    4.164   |   8.360 
+--------------------------------------------------------------------------------
+
+Table 3: Staged Backend Breakdown — Average per-step timing (ms)
+--------------------------------------------------------------------------------
+  Data Size  |   D2H    |   MPI    |   H2D    |  Total
+-------------|----------|----------|----------|----------
+   256 KB    |   0.054  |   0.056  |   0.028  |   0.142
+     1 MB    |   0.181  |   0.206  |   0.094  |   0.487
+     4 MB    |   0.443  |   0.869  |   0.359  |   1.661
+    16 MB    |   1.477  |   5.017  |   1.459  |   7.881
+--------------------------------------------------------------------------------
+
+Table 4: Raw Data — Latency per run (ms)
+--------------------------------------------------------------------------------
+Backend              | Size    | Run 1  | Run 2  | Run 3  |  Avg
+---------------------|---------|--------|--------|--------|--------
+Staged (block)       | 256 KB  |  0.138 |  0.150 |  0.138 |  0.142
+                     |   1 MB  |  0.477!|  0.507!|  0.477 |  0.487      <---------------------
+                     |   4 MB  |  1.638 |  1.657 |  1.687 |  1.661
+                     |  16 MB  |  7.923 |  7.990 |  7.729 |  7.881
+---------------------|---------|--------|--------|--------|--------
+Staged (Isend)       | 256 KB  |  0.138 |  0.140 |  0.138 |  0.139
+                     |   1 MB  |  0.848!|  0.722!|  0.477 |  0.682      <---------------------
+                     |   4 MB  |  1.612 |  1.618 |  1.632 |  1.621
+                     |  16 MB  |  7.862 |  7.752 |  8.562 |  8.059
+---------------------|---------|--------|--------|--------|--------
+CUDA-aware (block)   | 256 KB  |  0.105 |  0.202 |  0.105 |  0.137
+                     |   1 MB  |  0.579 |  0.352 |  0.593!|  0.508      <=====================
+                     |   4 MB  |  1.131 |  1.129 |  1.133 |  1.131
+                     |  16 MB  |  4.032 |  4.091 |  4.018 |  4.047
+---------------------|---------|--------|--------|--------|--------
+CUDA-aware (Isend)   | 256 KB  |  0.103 |  0.110 |  0.103 |  0.105
+                     |   1 MB  |  0.686 |  0.347 |  0.796!|  0.610      <=====================
+                     |   4 MB  |  1.123 |  1.128 |  1.128 |  1.126
+                     |  16 MB  |  4.009 |  4.053 |  4.026 |  4.029
+---------------------|---------|--------|--------|--------|--------
+NCCL                 | 256 KB  |  0.070 |  0.071 |  0.070 |  0.070
+                     |   1 MB  |  0.236 |  0.252 |  0.243 |  0.244
+                     |   4 MB  |  0.690 |  0.689 |  0.688 |  0.689
+                     |  16 MB  |  2.022 |  1.993 |  2.020 |  2.012
+--------------------------------------------------------------------------------
+
+Hardware Notes:
+  - GPU: 2x NVIDIA GeForce GTX 1660 Ti (Turing, 6 GB each) P2P NVLink
+  - MPI: OpenMPI 4.1.5 (NVIDIA HPC SDK 24.3, --with-cuda)
+  - NCCL: from NVIDIA HPC SDK 24.3 (comm_libs/12.3/nccl)

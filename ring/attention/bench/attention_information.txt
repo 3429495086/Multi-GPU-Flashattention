@@ -1,0 +1,372 @@
+========== Ring Attention Benchmark ==========
+np=2 warmup=10 iters=100
+sizes=262144 524288 1048576 4194304
+
+===== backend=staged =====
+--- kv_size=262144 bytes ---
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+staged bench: warmup=10 iters=100
+avg_total=24.677 ms avg_D2H=0.027 avg_MPI=0.080 avg_H2D=0.028 avg_attn=24.218 avg_merge=0.079 avg_final=0.269
+[Rank 1] output dumped to ring_output_rank1.bin
+[Rank 0] output dumped to ring_output_rank0.bin
+--- kv_size=524288 bytes ---
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=2048, seq_k=2048, dim=64, KV shard=512.0 KB
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=2048, seq_k=2048, dim=64, KV shard=512.0 KB
+staged bench: warmup=10 iters=100
+avg_total=97.271 ms avg_D2H=0.047 avg_MPI=0.209 avg_H2D=0.050 avg_attn=96.444 avg_merge=0.082 avg_final=0.519
+[Rank 1] output dumped to ring_output_rank1.bin
+[Rank 0] output dumped to ring_output_rank0.bin
+--- kv_size=1048576 bytes ---
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=4096, seq_k=4096, dim=64, KV shard=1024.0 KB
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=4096, seq_k=4096, dim=64, KV shard=1024.0 KB
+staged bench: warmup=10 iters=100
+avg_total=387.318 ms avg_D2H=0.088 avg_MPI=0.302 avg_H2D=0.094 avg_attn=385.775 avg_merge=0.130 avg_final=1.015
+[Rank 1] output dumped to ring_output_rank1.bin
+[Rank 0] output dumped to ring_output_rank0.bin
+--- kv_size=4194304 bytes ---
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=16384, seq_k=16384, dim=64, KV shard=4096.0 KB
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=16384, seq_k=16384, dim=64, KV shard=4096.0 KB
+staged bench: warmup=10 iters=100
+avg_total=6262.894 ms avg_D2H=0.333 avg_MPI=27.322 avg_H2D=0.355 avg_attn=6255.556 avg_merge=1.882 avg_final=3.680
+[Rank 1] output dumped to ring_output_rank1.bin
+[Rank 0] output dumped to ring_output_rank0.bin
+
+===== backend=staged_Isendrecv =====
+--- kv_size=262144 bytes ---
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+staged Isendrecv bench: warmup=10 iters=100
+avg_total=25.193 ms avg_D2H=0.027 avg_MPI=0.142 avg_H2D=0.029 avg_attn=24.740 avg_merge=0.080 avg_final=0.269
+--- kv_size=524288 bytes ---
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=2048, seq_k=2048, dim=64, KV shard=512.0 KB
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=2048, seq_k=2048, dim=64, KV shard=512.0 KB
+staged Isendrecv bench: warmup=10 iters=100
+avg_total=99.493 ms avg_D2H=0.047 avg_MPI=0.551 avg_H2D=0.050 avg_attn=98.705 avg_merge=0.084 avg_final=0.509
+--- kv_size=1048576 bytes ---
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=4096, seq_k=4096, dim=64, KV shard=1024.0 KB
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=4096, seq_k=4096, dim=64, KV shard=1024.0 KB
+staged Isendrecv bench: warmup=10 iters=100
+avg_total=393.347 ms avg_D2H=0.087 avg_MPI=0.251 avg_H2D=0.094 avg_attn=391.808 avg_merge=0.131 avg_final=1.012
+--- kv_size=4194304 bytes ---
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=16384, seq_k=16384, dim=64, KV shard=4096.0 KB
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=16384, seq_k=16384, dim=64, KV shard=4096.0 KB
+staged Isendrecv bench: warmup=10 iters=100
+avg_total=6257.870 ms avg_D2H=0.335 avg_MPI=24.494 avg_H2D=0.357 avg_attn=6250.546 avg_merge=1.889 avg_final=3.659
+
+===== backend=cuda_aware =====
+--- kv_size=262144 bytes ---
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+staged bench: warmup=10 iters=100
+avg_total=25.168 ms avg_MPI=0.147 avg_attn=24.741 avg_merge=0.080 avg_final=0.288
+--- kv_size=524288 bytes ---
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=2048, seq_k=2048, dim=64, KV shard=512.0 KB
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=2048, seq_k=2048, dim=64, KV shard=512.0 KB
+staged bench: warmup=10 iters=100
+avg_total=99.428 ms avg_MPI=0.504 avg_attn=98.729 avg_merge=0.085 avg_final=0.518
+--- kv_size=1048576 bytes ---
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=4096, seq_k=4096, dim=64, KV shard=1024.0 KB
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=4096, seq_k=4096, dim=64, KV shard=1024.0 KB
+staged bench: warmup=10 iters=100
+avg_total=393.177 ms avg_MPI=1.857 avg_attn=391.788 avg_merge=0.133 avg_final=1.022
+--- kv_size=4194304 bytes ---
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=16384, seq_k=16384, dim=64, KV shard=4096.0 KB
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=16384, seq_k=16384, dim=64, KV shard=4096.0 KB
+staged bench: warmup=10 iters=100
+avg_total=6257.705 ms avg_MPI=25.087 avg_attn=6250.693 avg_merge=1.879 avg_final=3.701
+
+===== backend=cuda_aware_Isendrecv =====
+--- kv_size=262144 bytes ---
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+CUDA-aware Isendrecv bench: warmup=10 iters=100
+avg_total=25.164 ms avg_CUDA-awre=0.167 avg_attn=24.745 avg_merge=0.080 avg_final=0.263
+--- kv_size=524288 bytes ---
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=2048, seq_k=2048, dim=64, KV shard=512.0 KB
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=2048, seq_k=2048, dim=64, KV shard=512.0 KB
+CUDA-aware Isendrecv bench: warmup=10 iters=100
+avg_total=99.433 ms avg_CUDA-awre=0.526 avg_attn=98.703 avg_merge=0.084 avg_final=0.517
+--- kv_size=1048576 bytes ---
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=4096, seq_k=4096, dim=64, KV shard=1024.0 KB
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=4096, seq_k=4096, dim=64, KV shard=1024.0 KB
+CUDA-aware Isendrecv bench: warmup=10 iters=100
+avg_total=393.200 ms avg_CUDA-awre=1.871 avg_attn=391.784 avg_merge=0.132 avg_final=1.026
+--- kv_size=4194304 bytes ---
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=16384, seq_k=16384, dim=64, KV shard=4096.0 KB
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=16384, seq_k=16384, dim=64, KV shard=4096.0 KB
+CUDA-aware Isendrecv bench: warmup=10 iters=100
+avg_total=6295.853 ms avg_CUDA-awre=44.142 avg_attn=6289.297 avg_merge=1.890 avg_final=3.708
+
+===== backend=nccl =====
+--- kv_size=262144 bytes ---
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+nccl bench: warmup=10 iters=100
+avg_total=25.142 ms avg_NCCL=0.222 avg_attn=24.752 avg_merge=0.080 avg_final=0.272
+--- kv_size=524288 bytes ---
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=2048, seq_k=2048, dim=64, KV shard=512.0 KB
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=2048, seq_k=2048, dim=64, KV shard=512.0 KB
+nccl bench: warmup=10 iters=100
+avg_total=99.224 ms avg_NCCL=0.478 avg_attn=98.543 avg_merge=0.083 avg_final=0.519
+--- kv_size=1048576 bytes ---
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=4096, seq_k=4096, dim=64, KV shard=1024.0 KB
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=4096, seq_k=4096, dim=64, KV shard=1024.0 KB
+nccl bench: warmup=10 iters=100
+avg_total=392.418 ms avg_NCCL=1.773 avg_attn=391.135 avg_merge=0.132 avg_final=1.007
+--- kv_size=4194304 bytes ---
+[Rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=16384, seq_k=16384, dim=64, KV shard=4096.0 KB
+[Rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=16384, seq_k=16384, dim=64, KV shard=4096.0 KB
+nccl bench: warmup=10 iters=100
+avg_total=6289.999 ms avg_NCCL=40.031 avg_attn=6283.880 avg_merge=1.869 avg_final=3.785
+
+========== Done ==========
+
+KV shard	seq_q = seq_k	Backend	                    Total (ms)	Comm (ms)	Attention (ms)	Merge (ms)	Final (ms)	Attention %
+256 KB	    1024	        Staged MPI	                24.677	    0.135	    24.218	        0.079	    0.269	    98.14%
+256 KB	    1024	        Staged MPI Isend/Irecv	    25.193	    0.198	    24.740	        0.080	    0.269	    98.20%
+256 KB	    1024	        CUDA-aware MPI	            25.168	    0.147	    24.741	        0.080	    0.288	    98.30%
+256 KB	    1024	        CUDA-aware MPI Isend/Irecv	25.164	    0.167	    24.745	        0.080	    0.263	    98.33%
+256 KB	    1024	        NCCL	                    25.142	    0.222	    24.752	        0.080	    0.272	    98.45%
+
+512 KB	    2048	        Staged MPI	                97.271	    0.306	    96.444	        0.082	    0.519	    99.15%
+512 KB	    2048	        Staged MPI Isend/Irecv	    99.493	    0.648	    98.705	        0.084	    0.509	    99.21%
+512 KB	    2048	        CUDA-aware MPI	            99.428	    0.504	    98.729	        0.085	    0.518	    99.30%
+512 KB	    2048	        CUDA-aware MPI Isend/Irecv	99.433	    0.526	    98.703	        0.084	    0.517	    99.27%
+512 KB	    2048	        NCCL	                    99.224	    0.478	    98.543	        0.083	    0.519	    99.31%
+
+1 MB	    4096	        Staged MPI	                387.318	    0.484	    385.775	        0.130	    1.015	    99.60%
+1 MB	    4096	        Staged MPI Isend/Irecv	    393.347	    0.432	    391.808	        0.131	    1.012	    99.61%
+1 MB	    4096	        CUDA-aware MPI	            393.177	    1.857	    391.788	        0.133	    1.022	    99.65%
+1 MB	    4096	        CUDA-aware MPI Isend/Irecv	393.200	    1.871	    391.784	        0.132	    1.026	    99.64%
+1 MB	    4096	        NCCL	                    392.418	    1.773	    391.135	        0.132	    1.007	    99.67%
+
+4 MB	    16384	        Staged MPI	                6262.894	28.010	    6255.556	    1.882	    3.680	    99.88%
+4 MB	    16384	        Staged MPI Isend/Irecv	    6257.870	25.186	    6250.546	    1.889	    3.659	    99.88%
+4 MB	    16384	        CUDA-aware MPI	            6257.705	25.087	    6250.693	    1.879	    3.701	    99.89%
+4 MB	    16384	        CUDA-aware MPI Isend/Irecv	6295.853	44.142	    6289.297	    1.890	    3.708	    99.90%
+4 MB	    16384	        NCCL	                    6289.999	40.031	    6283.880	    1.869	    3.785	    99.90%
+
+
+================================================================================================================================================
+
+./check_attention_correctness.sh
+========== Project Attention Correctness Check ==========
+Date: Wed May  6 18:52:17 MSK 2026
+Hostname: mic.dvm-system.org
+np=2 size=262144 warmup=1 iters=1
+nvcc=/opt/cuda/current/bin/nvcc
+mpirun=/nethome/nvidia/hpc_sdk/Linux_x86_64/24.3/comm_libs/12.3/openmpi4/openmpi-4.1.5/bin/mpirun
+results=/home/yuvinci/project/ring/attention/bench/results/correctness_mic.dvm-system.org_20260506_185217/attention_correctness_np2_size262144
+
+
+===== correctness pair=staged_Isendrecv_vs_overlap =====
+--- baseline: ./ring_attention_staged_Isendrecv_gpu_bench ---
+MPI thread support: required=1 provided=1
+[Rank 0 local 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+[Rank 1 local 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+staged Isendrecv bench: warmup=1 iters=1
+avg_total=32.560 ms avg_D2H=0.028 avg_MPI=0.141 avg_H2D=0.029 avg_attn=32.261 avg_merge=0.104 avg_final=0.086
+[Rank 1] output dumped to ring_output_rank1.bin
+[Rank 0] output dumped to ring_output_rank0.bin
+--- full reference check: staged_Isendrecv_vs_overlap_baseline ---
+=== Rank 0 === PASS
+  Elements compared : 65536
+  Max absolute error: 0.015625
+  Max relative error: 0.00000024
+  Worst index       : 5 (ref=66452.7031, ring=66452.6875)
+  NaN/Inf count     : 0
+
+=== Rank 1 === PASS
+  Elements compared : 65536
+  Max absolute error: 0.000000
+  Max relative error: 0.00000000
+  Worst index       : 0 (ref=66472.0000, ring=66472.0000)
+  NaN/Inf count     : 0
+
+============================
+Overall: ALL PASS
+--- overlap: ./ring_attention_staged_Isendrecv_overlap_gpu_bench ---
+MPI thread support: required=1 provided=1
+[Rank 0 local_rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+[Rank 1 local_rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+staged Isendrecv OVERLAP bench: warmup=1 iters=1
+avg_total=32.437 ms avg_D2H=0.026 avg_MPI=0.059 avg_H2D=0.027 avg_attn=32.227 avg_merge=0.094 avg_final=0.092
+[Rank 1] output dumped to ring_output_rank1.bin
+[Rank 0] output dumped to ring_output_rank0.bin
+--- full reference check: staged_Isendrecv_vs_overlap_overlap ---
+=== Rank 0 === PASS
+  Elements compared : 65536
+  Max absolute error: 0.015625
+  Max relative error: 0.00000024
+  Worst index       : 5 (ref=66452.7031, ring=66452.6875)
+  NaN/Inf count     : 0
+
+=== Rank 1 === PASS
+  Elements compared : 65536
+  Max absolute error: 0.000000
+  Max relative error: 0.00000000
+  Worst index       : 0 (ref=66472.0000, ring=66472.0000)
+  NaN/Inf count     : 0
+
+============================
+Overall: ALL PASS
+staged_Isendrecv_vs_overlap: PASS elements=131072 max_abs_err=0.000000e+00 mean_abs_err=0.000000e+00 max_rel_err=0.000000e+00 worst_rank=-1 abs_tol=1.0e-03 rel_tol=1.0e-05
+
+===== correctness pair=cuda_aware_Isendrecv_vs_overlap =====
+--- baseline: ./ring_attention_cuda_aware_Isendrecv_gpu_bench ---
+MPI thread support: required=1 provided=1
+[Rank 0 local 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+[Rank 1 local 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+CUDA-aware Isendrecv bench: warmup=1 iters=1
+avg_total=32.068 ms avg_CUDA-aware=0.173 avg_attn=31.798 avg_merge=0.100 avg_final=0.092
+[Rank 1] output dumped to ring_output_rank1.bin
+[Rank 0] output dumped to ring_output_rank0.bin
+--- full reference check: cuda_aware_Isendrecv_vs_overlap_baseline ---
+=== Rank 0 === PASS
+  Elements compared : 65536
+  Max absolute error: 0.015625
+  Max relative error: 0.00000024
+  Worst index       : 5 (ref=66452.7031, ring=66452.6875)
+  NaN/Inf count     : 0
+
+=== Rank 1 === PASS
+  Elements compared : 65536
+  Max absolute error: 0.000000
+  Max relative error: 0.00000000
+  Worst index       : 0 (ref=66472.0000, ring=66472.0000)
+  NaN/Inf count     : 0
+
+============================
+Overall: ALL PASS
+--- overlap: ./ring_attention_cuda_aware_Isendrecv_overlap_gpu_bench ---
+MPI thread support: required=1 provided=1
+[Rank 1 local_rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+[Rank 0 local_rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+CUDA-aware Isendrecv OVERLAP bench: warmup=1 iters=1
+avg_total=31.980 ms avg_CUDA-aware=0.102 avg_attn=31.781 avg_merge=0.093 avg_final=0.090
+[Rank 1] output dumped to ring_output_rank1.bin
+[Rank 0] output dumped to ring_output_rank0.bin
+--- full reference check: cuda_aware_Isendrecv_vs_overlap_overlap ---
+=== Rank 0 === PASS
+  Elements compared : 65536
+  Max absolute error: 0.015625
+  Max relative error: 0.00000024
+  Worst index       : 5 (ref=66452.7031, ring=66452.6875)
+  NaN/Inf count     : 0
+
+=== Rank 1 === PASS
+  Elements compared : 65536
+  Max absolute error: 0.000000
+  Max relative error: 0.00000000
+  Worst index       : 0 (ref=66472.0000, ring=66472.0000)
+  NaN/Inf count     : 0
+
+============================
+Overall: ALL PASS
+cuda_aware_Isendrecv_vs_overlap: PASS elements=131072 max_abs_err=0.000000e+00 mean_abs_err=0.000000e+00 max_rel_err=0.000000e+00 worst_rank=-1 abs_tol=1.0e-03 rel_tol=1.0e-05
+
+========== Project Correctness Check Done ==========
+
+================================================================================================================================================
+
+====
+ATTENTION_PRINT_SHARDS=1 \
+/nethome/nvidia/hpc_sdk/Linux_x86_64/24.3/comm_libs/12.3/openmpi4/openmpi-4.1.5/bin/mpirun \
+-np 2 ./ring_attention_cuda_aware_Isendrecv_overlap_gpu_bench 262144 1 1
+
+MPI thread support: required=1 provided=1
+[Rank 0 local_rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] Q tokens=[0,1024) KV tokens=[0,1024) global_Q=2048 global_KV=2048
+[Rank 0] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+[Rank 1 local_rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] Q tokens=[1024,2048) KV tokens=[1024,2048) global_Q=2048 global_KV=2048
+[Rank 1] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+[Rank 0] step=0 compute_kv_owner=0 KV tokens=[0,1024), receiving_kv_owner=1 KV tokens=[1024,2048)
+[Rank 1] step=0 compute_kv_owner=1 KV tokens=[1024,2048), receiving_kv_owner=0 KV tokens=[0,1024)
+[Rank 0] final compute_kv_owner=1 KV tokens=[1024,2048)
+[Rank 1] final compute_kv_owner=0 KV tokens=[0,1024)
+CUDA-aware Isendrecv OVERLAP bench: warmup=1 iters=1
+avg_total=32.158 ms avg_CUDA-aware=0.095 avg_attn=31.789 avg_merge=0.092 avg_final=0.258
+
+====
+ATTENTION_PRINT_SHARDS=1 \
+/nethome/nvidia/hpc_sdk/Linux_x86_64/24.3/comm_libs/12.3/openmpi4/openmpi-4.1.5/bin/mpirun \
+-np 2 ./ring_attention_staged_Isendrecv_overlap_gpu_bench 262144 1 1
+
+MPI thread support: required=1 provided=1
+[Rank 0 local_rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] Q tokens=[0,1024) KV tokens=[0,1024) global_Q=2048 global_KV=2048
+[Rank 0] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+[Rank 1 local_rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] Q tokens=[1024,2048) KV tokens=[1024,2048) global_Q=2048 global_KV=2048
+[Rank 1] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+[Rank 0] step=0 compute_kv_owner=0 KV tokens=[0,1024), receiving_kv_owner=1 KV tokens=[1024,2048)
+[Rank 1] step=0 compute_kv_owner=1 KV tokens=[1024,2048), receiving_kv_owner=0 KV tokens=[0,1024)
+[Rank 0] final compute_kv_owner=1 KV tokens=[1024,2048)
+[Rank 1] final compute_kv_owner=0 KV tokens=[0,1024)
+staged Isendrecv OVERLAP bench: warmup=1 iters=1
+avg_total=32.620 ms avg_D2H=0.027 avg_MPI=0.060 avg_H2D=0.027 avg_attn=32.244 avg_merge=0.093 avg_final=0.259
+
+====
+/nethome/nvidia/hpc_sdk/Linux_x86_64/24.3/comm_libs/12.3/openmpi4/openmpi-4.1.5/bin/mpirun \
+> -np 2 ./ring_attention_cuda_aware_Isendrecv_overlap_gpu_bench 262144 10 100
+
+MPI thread support: required=1 provided=1
+[Rank 0 local_rank 0] GPU 0: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 0] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+[Rank 1 local_rank 1] GPU 1: NVIDIA GeForce GTX 1660 Ti (6218 MB total)
+[Rank 1] seq_q=1024, seq_k=1024, dim=64, KV shard=256.0 KB
+CUDA-aware Isendrecv OVERLAP bench: warmup=10 iters=100
+avg_total=24.563 ms avg_CUDA-aware=0.088 avg_attn=24.194 avg_merge=0.071 avg_final=0.284
+
+Correctness: all benchmark overlap/non-overlap versions pass full-reference validation.
+Shard debug: rank-local Q/KV ranges and per-step KV owner flow are now printed with ATTENTION_PRINT_SHARDS=1.
