@@ -1,145 +1,207 @@
-mask_value()：说明为什么 mask 规则要集中在一个地方
-build_tasks()：说明为什么只输出非空 block
-build_row_tasks()：说明它是把 block 聚合成 row-level task
-assign_lpt_scan()：说明为什么要排序但还要保留原始下标
-assign_lpt()：说明它现在是 idealized baseline
-rebalance_move_once() / rebalance_swap_once()：说明它们分别在修什么
-assign_row_tasks_lpt()：说明 row-level LPT 的调度单位变了
-partition_rows_contiguous()：说明 DP 状态、切点和回溯分别在干什么
+# Workload Modeling And Scheduling
 
-可以。按你现在这套代码，我给你按“模块”总结最关键的变量名，各自是干什么的。
+This directory contains the workload modeling and scheduling prototype for
+attention computation. It is separate from the MPI/CUDA Ring Attention runtime
+benchmarks under `../ring/`.
 
-**`workload_input`**
-- `seq_q`：Q 序列总长度。
-- `seq_k`：K 序列总长度。
-- `block_q`：Q 方向每个 block 的长度。
-- `block_k`：K 方向每个 block 的长度。
+The goal of this module is to estimate how attention work is distributed across
+blocks or rows, then compare several static scheduling strategies across GPUs.
 
-它的作用是：决定 attention 被切成多少个 block。
+## Files
 
-**`mask_desc`**
-- `type`：mask 类型。你现在主要是 `MASK_CAUSAL`。
+- `workload.c`, `workload.h`: attention block construction, mask handling, active-element counting, and simple cost modeling.
+- `scheduler.c`, `scheduler.h`: scheduling algorithms and partitioning utilities.
+- `demo.c`: command-line demo for workload generation and scheduler comparison.
+- `run_experiments.sh`: helper script for running preset demo configurations.
 
-它的作用是：定义哪些 `(q, k)` 位置有效。
+## Main Concepts
 
-**`cost_model`**
-- `alpha`：固定开销。
-- `beta`：每个有效元素对应的线性代价。
+### `workload_input`
 
-它的作用是：把 `active` 转成 `cost`。
+Defines the attention problem shape and block size.
 
----
+- `seq_q`: total Q sequence length.
+- `seq_k`: total K sequence length.
+- `block_q`: block size along the Q dimension.
+- `block_k`: block size along the K dimension.
 
-**`block_task`**
-这是 block-level workload 的基本单位。
+This determines how the attention matrix is split into blocks.
 
-- `row_idx`：这个 block 在 block 网格里的行号。
-- `col_idx`：这个 block 在 block 网格里的列号。
-- `q_begin`, `q_end`：这个 block 覆盖的 Q 范围，左闭右开。
-- `k_begin`, `k_end`：这个 block 覆盖的 K 范围，左闭右开。
-- `active`：这个 block 里有效元素个数。
-- `cost`：这个 block 的估计计算代价。
-- `total`：这个 block 的元素总数。
-- `density`：有效比例，`active / total`。
+### `mask_desc`
 
-它的作用是：描述一个非空 attention block 的几何范围和工作量。
+Describes which `(q, k)` positions are valid.
 
----
+- `type`: mask type, currently mainly `MASK_CAUSAL`.
 
-**`row_task`**
-这是 row-level / shard-level 调度的基础单位，是把同一行的多个 `block_task` 聚合后的结果。
+The mask logic is centralized in `mask_value()` so all workload builders use the
+same validity rule.
 
-- `row_idx`：第几行 block-row。
-- `num_blocks`：这一行有多少个非空 block。
-- `num_cols_needed`：这一行实际需要多少列 KV block。causal 下等于“最右非空列 + 1”。
-- `row_cost`：这一行所有 block 的计算 cost 总和。
-- `comm_cost`：这一行的通信代价。你现在还是 `0`。
-- `total_cost`：总成本，`row_cost + comm_cost`。
+### `cost_model`
 
-它的作用是：把细粒度 block workload 升级成更贴近 Ring 的行级任务。
+Converts active elements into an estimated computation cost.
 
----
+- `alpha`: fixed per-task overhead.
+- `beta`: per-active-element cost.
 
-**`gpu_load`**
-这是 scheduler 里每张 GPU 当前的负载状态。
+The current model is intentionally simple and compute-only. Communication cost
+is not modeled in detail yet.
 
-- `gpu_id`：GPU 编号。
-- `task_count`：当前分到了多少个任务。
-- `total_cost`：当前这张 GPU 的总代价。
+## Task Types
 
-它的作用是：让 LPT、move、swap 能比较谁最轻、谁最重。
+### `block_task`
 
----
+The basic block-level workload unit.
 
-**`task_to_gpu[]`**
-- 下标是 task 编号。
-- 值是这个 task 被分到哪张 GPU。
+- `row_idx`, `col_idx`: block-grid coordinates.
+- `q_begin`, `q_end`: Q token range covered by the block.
+- `k_begin`, `k_end`: K token range covered by the block.
+- `active`: number of valid attention elements in the block.
+- `total`: total number of elements in the block.
+- `density`: `active / total`.
+- `cost`: estimated computation cost.
 
-比如：
+`build_tasks()` only emits non-empty blocks, so scheduling is not polluted by
+zero-work tasks.
+
+### `row_task`
+
+Row-level workload unit built by aggregating block tasks from the same block
+row.
+
+- `row_idx`: block-row index.
+- `num_blocks`: number of non-empty blocks in the row.
+- `num_cols_needed`: number of KV block columns needed by this row.
+- `row_cost`: total compute cost of the row.
+- `comm_cost`: communication cost placeholder, currently zero.
+- `total_cost`: `row_cost + comm_cost`.
+
+`build_row_tasks()` is useful because row-level or shard-level scheduling is
+closer to Ring Attention partitioning than individual block scheduling.
+
+## Scheduling Data Structures
+
+### `gpu_load`
+
+Tracks the current load assigned to one GPU.
+
+- `gpu_id`: GPU index.
+- `task_count`: number of assigned tasks.
+- `total_cost`: total estimated cost assigned to the GPU.
+
+Schedulers use this to find the currently lightest or heaviest GPU.
+
+### `task_to_gpu[]`
+
+Maps each block task to a GPU.
+
+Example:
+
 ```c
 task_to_gpu[5] = 2;
 ```
-表示第 5 个 `block_task` 在 GPU 2 上。
 
-它的作用是：从“只知道每张卡多重”变成“知道每个任务具体去哪了”。  
-move / swap repair 都靠它。
+This means block task 5 is assigned to GPU 2.
 
----
+### `row_to_gpu[]`
 
-**`row_to_gpu[]`**
-- 下标是 row 编号。
-- 值是这个 `row_task` 被分到哪张 GPU。
+Maps each row task to a GPU. It is the row-level equivalent of `task_to_gpu[]`.
 
-它的作用和 `task_to_gpu[]` 一样，只不过对象变成了 row-level task。
+### `indexed_task`
 
----
+Internal helper used by LPT scheduling.
 
-**`indexed_task`**
-这是 scheduler 内部排序时用的辅助结构。
+- `original_idx`: original task index before sorting.
+- `cost`: task cost used for sorting.
 
-- `original_idx`：原始任务编号。
-- `cost`：排序时用的代价。
+This allows the scheduler to sort by cost while still writing assignments back
+to the original task indices.
 
-它的作用是：排序后仍然知道“原来是谁”，这样 `task_to_gpu[idx]` 才能填对。
+### `row_shard`
 
----
+Represents a contiguous row range assigned to one GPU.
 
-**`row_shard`**
-这是连续分段 DP 的输出结构。
+- `gpu_id`: GPU index.
+- `row_begin`: first row in the shard.
+- `row_end`: one-past-the-end row index.
+- `total_cost`: total cost of the shard.
 
-- `gpu_id`：这段属于哪张 GPU。
-- `row_begin`：连续段起点。
-- `row_end`：连续段终点，左闭右开。
-- `total_cost`：这个 shard 的总代价。
+This structure is used by contiguous row partitioning.
 
-它的作用是：表达“连续 shard”方案的最终切分结果。
+## Scheduling Methods
 
----
+### Round-Robin
 
-**DP 里的关键变量**
-在 `partition_rows_contiguous()` 里：
+Assigns tasks cyclically across GPUs. It is simple but does not consider task
+cost.
 
-- `prefix[i]`：前 `i` 行的总代价前缀和。
-  用来快速算连续段 `[k, i)` 的 cost。
+### LPT
 
-- `dp[g][i]`：前 `i` 行分给 `g` 张 GPU 时，最优的最小 makespan。
-  这是 DP 的主状态。
+Longest Processing Time first. Tasks are sorted by descending cost, then each
+task is assigned to the currently lightest GPU.
 
-- `cut[g][i]`：达到 `dp[g][i]` 时，最后一段从哪一行开始。
-  用来回溯最终切分结果。
+`assign_lpt()` is an idealized baseline because it allows arbitrary task
+placement and does not enforce communication locality.
 
-- `k`：当前枚举的最后一个分割点候选。
-  也就是最后一段 `[k, i)` 的起点。
+### Row-Level LPT
 
----
+Same idea as LPT, but the scheduling unit is `row_task` instead of `block_task`.
+This is coarser and closer to token-row partitioning.
 
-**schedule summary 里的统计量**
-- `total_cost`：所有 GPU 总负载。
-- `avg_load`：平均负载，`total_cost / num_gpus`。
-- `makespan`：最重 GPU 的负载。
-- `gap_to_avg`：`makespan - avg_load`。
-- `imbalance`：`makespan / avg_load`，越接近 1 越平衡。
+### Move / Swap Rebalancing
 
----
+`rebalance_move_once()` tries to move one task from the heaviest GPU to a
+lighter GPU.
 
-如果你愿意，我下一条可以把这些变量再整理成一版“老师问你时可以口头直接讲”的简短版本。
+`rebalance_swap_once()` tries to swap tasks between GPUs to reduce imbalance.
+
+These are local repair heuristics.
+
+### Contiguous Row DP
+
+`partition_rows_contiguous()` partitions row tasks into contiguous ranges.
+
+Important internal variables:
+
+- `prefix[i]`: prefix sum of costs for the first `i` rows.
+- `dp[g][i]`: best makespan when assigning the first `i` rows to `g` GPUs.
+- `cut[g][i]`: split point used to reconstruct the solution.
+- `k`: candidate start of the last segment `[k, i)`.
+
+This is useful when task assignment must preserve contiguous token ranges.
+
+## Summary Metrics
+
+- `total_cost`: total estimated work across all GPUs.
+- `avg_load`: `total_cost / num_gpus`.
+- `makespan`: maximum GPU load.
+- `gap_to_avg`: `makespan - avg_load`.
+- `imbalance`: `makespan / avg_load`; closer to `1.0` means better balance.
+
+## Build
+
+```bash
+gcc -O2 -std=c11 -o demo demo.c scheduler.c workload.c
+```
+
+## Run
+
+Example:
+
+```bash
+./demo --seq 4096 --gpus 2 --mask causal
+```
+
+Run preset experiments:
+
+```bash
+sh run_experiments.sh
+```
+
+## Relation To Ring Attention
+
+This module does not run MPI or CUDA communication. It provides the workload and
+scheduling side of the project.
+
+The Ring Attention benchmark under `../ring/attention/bench` currently uses
+equal token/KV shards. Future work can connect this workload scheduler to the
+runtime benchmark by using scheduler output to choose Q/KV shard assignments.

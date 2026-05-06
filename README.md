@@ -49,7 +49,7 @@ Main contents:
 - `scheduler.c`, `scheduler.h`: scheduling algorithms and row/block partitioning logic.
 - `demo.c`: command-line demo for scheduling experiments.
 - `run_experiments.sh`: helper script for preset experiments.
-- `readme`: detailed notes about workload variables and scheduler internals.
+- `README.md`: detailed notes about workload variables and scheduler internals.
 
 This part answers questions such as:
 
