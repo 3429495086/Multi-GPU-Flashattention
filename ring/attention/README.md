@@ -153,18 +153,3 @@ for normal performance measurements.
   and a local KV shard, then ring exchange circulates KV shards across ranks.
 - The overlap variants compute attention on the current KV shard while receiving
   the next KV shard.
-
-## Do Not Commit Generated Files
-
-Do not upload generated executables or results:
-
-```text
-bench/ring_attention_*_gpu_bench
-gpu/ring_attention_*_gpu
-verify_full
-bench/ring_output_rank*.bin
-bench/results/
-gpu/results/
-*.log
-.DS_Store
-```
